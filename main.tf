@@ -27,21 +27,15 @@ resource "azurerm_resource_group" "example" {
   location = var.avail_zone
 }
 
+
 resource "azurerm_network_security_group" "example" {
   name                = var.az-security-group
   location            = var.avail_zone
   resource_group_name = var.rg_name
   tags = {
     Name : "${env_prefix}-${var.az-security-group}"
-  }
-}
-
-
-resource "azurerm_network_security_group" "example" {
-  name                = var.az-security-group
-  location            = var.az_location
-  resource_group_name = var.rg_name
-  security_rule {
+      }
+ security_rule {
     name                   = "myhttp"
     priority               = 100
     direction              = "Inbound"
