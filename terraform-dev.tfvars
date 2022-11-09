@@ -1,1 +1,6 @@
-rg_name = "az-104"
+rg_name           = "az-104"
+vpc_name          = "az-vpc"
+vpc_cid_block     = "10.0.0.0/16"
+subnet_cidr_block = "10.0.10.0/24"
+avail_zone        = "East US"
+env_prefix        = "dev"

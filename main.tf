@@ -1,50 +1,78 @@
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = "=3.0.0"
+    }
   }
-}
 }
 
 provider "azurerm" {
   features {}
 }
-variable "rg_name" {
-  description = "resource group name"
-  type = string
-}
+
+
+
+variable "rg_name" {}
+variable "vpc_name" {}
+variable "az-security-group" {}
+variable "env_prefix" {}
+variable "avail_zone" {}
+variable "vpc_cid_block" {}
+variable "subnet_cidr_block" {}
+variable "az_location" {}
 
 resource "azurerm_resource_group" "example" {
   name     = var.rg_name
-  location = "East US"
+  location = var.avail_zone
 }
 
 resource "azurerm_network_security_group" "example" {
-  name                = "az-104-security-group"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  name                = var.az-security-group
+  location            = var.avail_zone
+  resource_group_name = var.rg_name
+  tags = {
+    Name : "${env_prefix}-${var.az-security-group}"
+  }
 }
 
-resource "azurerm_virtual_network" "example" {
-  name                = "az-104vn"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-  address_space       = ["10.0.0.0/16"]
-  dns_servers         = ["10.0.0.4", "10.0.0.5"]
 
-  subnet {
-    name           = "subnet1"
-    address_prefix = "10.0.1.0/24"
-  }
+resource "azurerm_network_security_group" "example" {
+  name                = var.az-security-group
+  location            = var.az_location
+  resource_group_name = var.rg_name
+  security_rule {
+    name                   = "myhttp"
+    priority               = 100
+    direction              = "Inbound"
+    access                 = "Allow"
+    protocol               = "tcp"
+    destination_port_range = "8080"
 
-  subnet {
-    name           = "subnet2"
-    address_prefix = "10.0.2.0/24"
-    security_group = azurerm_network_security_group.example.id
   }
 
   tags = {
-    environment = "dev"
+    environment = "${env_prefix}"
   }
 }
+
+resource "azurerm_virtual_network" "example" {
+  name                = var.vpc_name
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  address_space       = var.vpc_cid_block
+  dns_servers         = ["10.0.0.4", "10.0.0.5"]
+
+  subnet {
+    name           = "${var.rg_name}-subnet"
+    address_prefix = var.subnet_cidr_block
+  }
+
+  tags = {
+    environment = "${env_prefix}-${var.vpc_name}-vpc"
+  }
+}
+
+
+
+
