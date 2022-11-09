@@ -10,9 +10,13 @@ terraform {
 provider "azurerm" {
   features {}
 }
+variable "rg_name" {
+  description = "resource group name"
+  type = string
+}
 
 resource "azurerm_resource_group" "example" {
-  name     = "az-104"
+  name     = var.rg_name
   location = "East US"
 }
 
