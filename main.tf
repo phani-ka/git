@@ -11,8 +11,6 @@ provider "azurerm" {
   features {}
 }
 
-
-
 variable "rg_name" {}
 variable "vpc_name" {}
 variable "az-security-group" {}
