@@ -44,8 +44,8 @@ resource "azurerm_network_security_group" "example" {
   }
 
   tags = {
-    Name : "${env_prefix}-${var.az-security-group}"
-    environment = "${env_prefix}"
+    Name : "${var.env_prefix}-${var.az-security-group}"
+    environment = "${var.env_prefix}"
   }
 }
 
@@ -62,7 +62,7 @@ resource "azurerm_virtual_network" "example" {
   }
 
   tags = {
-    environment = "${env_prefix}-${var.vpc_name}-vpc"
+    environment = "${var.env_prefix}-${var.vpc_name}-vpc"
   }
 }
 
