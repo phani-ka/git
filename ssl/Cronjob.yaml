@@ -1,0 +1,14 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: update-cert
+spec:
+  schedule: "0 0 * * *" # Run every day at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: update-cert
+            image: my-image
+            command: ["/bin/bash", "/path/to/script.sh"]
