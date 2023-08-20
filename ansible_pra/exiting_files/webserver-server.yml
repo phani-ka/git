@@ -1,0 +1,52 @@
+---
+- name: configure webserver with nginx
+  hosts: webservers
+  become: True
+  vars:
+    tls_dir: /etc/nginx/ssl/
+    key_file: nginx.key
+    cert_file: nginx.crt
+    conf_file: /etc/nginx/sites-available/default
+    server_name: localhost
+  tasks: 
+    - name: Ensure nginx is installed
+      yum: name=nginx update_cache=yes
+    
+    - name: Manage nginx config template
+      template:
+        src: /root/ansible_pra/templates/nginx.conf.j2
+        dest: "{{ conf_file }}"
+        mode: '0644'
+        #force: yes
+        backup: yes
+      notify: Restart nginx
+
+    - name: copy TLS filles
+      copy: 
+        src: "/root/ansible_pra/files/{{ item }}"
+        dest: "{{ tls_dir }}"
+        mode: '0600'
+      loop:
+        - "{{ key_file }}"
+        - "{{ cert_file }}"
+        #irecurse: yes
+    - name: Enable configuration
+      file: 
+        dest: /etc/nginx/sites-enabled/default
+        src: /etc/nginx/sites-available/default
+        state: link
+        force: yes
+    - name: Copy index.html
+      template: 
+        src: /root/ansible_pra/templates/index.html.j2
+        dest: /usr/share/nginx/html/index.html
+    - name: Manage nginx config template
+      template:
+        src: /root/ansible_pra/templates/nginx.conf.j2
+        dest: "{{ conf_file }}"
+        mode: '0644'
+      notify: Restart nginx
+  handlers:
+    - name: Restart nginx
+      service: name=nginx state=restarted
+

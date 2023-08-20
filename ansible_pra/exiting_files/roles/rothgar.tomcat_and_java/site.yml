@@ -1,0 +1,7 @@
+---
+- hosts: tomcat
+  sudo: True
+  vars_files:
+    - vars/main.yml
+  roles:
+    - { rothgar.tomcat_and_java }

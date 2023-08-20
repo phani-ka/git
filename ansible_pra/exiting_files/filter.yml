@@ -1,0 +1,15 @@
+---
+- name: 'filters for registered variables'
+  hosts: "{{ database_host | default('localhost') }}"
+  tasks:
+    - name: 'Run myprog'
+      command: /opt/myprog
+      register: result
+      ignore_errors: true
+    - name: debug
+      debug: var=result
+    - name: print msg
+      debug: 
+        msg: "stop running the playbook if myprog failed"
+      failed_when: result | failed
+

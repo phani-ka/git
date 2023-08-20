@@ -1,0 +1,13 @@
+---
+- name: 'filters for registered variables'
+  hosts: "{{ database_host | default('localhost') }}"
+  vars:
+    dirpath: /kambala/phaneendra
+  tasks:
+    - name: 'create dir'
+      file:
+       path: "/root/{{ dirpath | basename }}"
+       state: directory
+       
+
+

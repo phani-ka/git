@@ -1,0 +1,10 @@
+---
+- name: 'filters for registered variables'
+  hosts: "{{ database_host | default('localhost') }}"
+  tasks:
+    - name: 'Iterate over lines in a file'
+      debug: 
+        msg: "{{ item }}"
+      with_lines:
+        - cat files/ancd.txt
+

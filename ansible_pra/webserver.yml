@@ -1,0 +1,9 @@
+---
+- name: configure the nginx server
+  hosts: devops
+  become: True
+  tasks:
+    - name: nginx is installed 
+      yum: name=nginx update_cache=yes
+    - name: Restart or start nginx server
+      service: name=nginx state=restarted
